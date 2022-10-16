@@ -1,10 +1,16 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, {
+  InputHTMLAttributes,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { isValid } from "../utils/parsing";
 
-const FormulaInput: React.FC<{
-  className?: string;
-  onSubmit: (value: string) => void;
-}> = ({ className, onSubmit }) => {
+const FormulaInput: React.FC<
+  InputHTMLAttributes<HTMLInputElement> & {
+    onAddFormula: (value: string) => void;
+  }
+> = ({ className, onAddFormula, ...props }) => {
   const [value, setValue] = useState<string>("");
   const isFormulaValid = useMemo<boolean>(() => {
     return value.length > 0 && isValid(value);
@@ -13,7 +19,7 @@ const FormulaInput: React.FC<{
   const handleKeyDown = useCallback(
     (key: string) => {
       if (isFormulaValid && key === "Enter") {
-        onSubmit(value);
+        onAddFormula(value);
         setValue("");
       }
     },
@@ -22,6 +28,7 @@ const FormulaInput: React.FC<{
 
   return (
     <input
+      autoFocus
       className={
         (className ?? "") +
         (value.length > 0 && !isFormulaValid ? " border-red-500" : "")
@@ -31,6 +38,7 @@ const FormulaInput: React.FC<{
       value={value}
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={(e) => handleKeyDown(e.key)}
+      {...props}
     />
   );
 };

@@ -3,14 +3,14 @@ import FormulaInput from "./formulaInput";
 
 const Monospace: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <span className="font-mono text-red-500 border-2 border-red-500 rounded-md px-2 bg-red-50">
+    <span className="font-mono text-xl text-red-500 border-2 border-red-500 rounded-md px-2 bg-red-50">
       {children}
     </span>
   );
 };
 
-const EmptyState: React.FC<{ onSubmit: (value: string) => void }> = ({
-  onSubmit,
+const EmptyState: React.FC<{ onAddFormula: (value: string) => void }> = ({
+  onAddFormula,
 }) => {
   return (
     <div className="h-full w-full flex flex-col flex-1 items-center justify-between">
@@ -20,7 +20,7 @@ const EmptyState: React.FC<{ onSubmit: (value: string) => void }> = ({
           <br />
           <FormulaInput
             className="border-2 px-2 py-2 w-full text-2xl"
-            onSubmit={onSubmit}
+            onAddFormula={onAddFormula}
           />
         </label>
       </div>
