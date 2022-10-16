@@ -1,10 +1,9 @@
 import React, { ReactNode, useMemo, useState } from "react";
 import { evaluate, listVariables, prettyPrint } from "../utils/parsing";
 import { generateCombinations } from "../utils/generator";
-import { FaTrash, FaLock, FaLockOpen } from "react-icons/fa";
+import { FaTrash, FaLock } from "react-icons/fa";
 import EmptyState from "./emptyState";
 import FormulaInput from "./formulaInput";
-import { IconBase } from "react-icons";
 
 const Cell: React.FC<{ className?: string; children: ReactNode }> = ({
   className,
@@ -48,13 +47,15 @@ const Row: React.FC<{
   }
 
   return (
-    <tr className="hover:bg-blue-50">
+    <tr className="hover:bg-blue-5 dark:hover:bg-blue-900">
       {rowValues.map(([key, value], i) => {
         const isLocked = locks.has(key);
         return (
           <Cell
             key={`variable-${key}`}
-            className={"group" + (i % 2 === 1 ? " bg-neutral-100" : "")}
+            className={
+              "group" + (i % 2 === 1 ? " bg-neutral-100 dark:bg-gray-800" : "")
+            }
           >
             <div className="flex justify-between items-center">
               {value.toString()}
@@ -74,7 +75,10 @@ const Row: React.FC<{
         return (
           <Cell
             key={`formula-${i}`}
-            className={"border-l-2 " + (value ? "bg-green-100" : "bg-red-100")}
+            className={
+              "border-l-2 dark:text-black " +
+              (value ? "bg-green-100" : "bg-red-100")
+            }
           >
             {value.toString()}
           </Cell>
@@ -141,7 +145,7 @@ const TruthTable: React.FC = () => {
           {variables.map((variable, i) => (
             <th
               key={`variable-${variable}`}
-              className={i % 2 === 1 ? "bg-neutral-100" : ""}
+              className={i % 2 === 1 ? "bg-neutral-100 dark:bg-slate-800" : ""}
             >
               {variable}
             </th>

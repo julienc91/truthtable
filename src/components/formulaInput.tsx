@@ -30,6 +30,7 @@ const FormulaInput: React.FC<
     <input
       autoFocus
       className={
+        "text-black " +
         (className ?? "") +
         (value.length > 0 && !isFormulaValid ? " border-red-500" : "")
       }
