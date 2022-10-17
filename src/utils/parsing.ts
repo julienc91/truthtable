@@ -78,6 +78,14 @@ export const listVariables = (formula: string): string[] => {
   return [...new Set(variables)];
 };
 
+export const listAllVariables = (formulas: string[]): string[] => {
+  const variables = new Set<string>();
+  formulas.forEach((formula) =>
+    listVariables(formula).forEach((variable) => variables.add(variable))
+  );
+  return [...variables].sort();
+};
+
 /**
  * Evaluate a formula.
  * @param formula

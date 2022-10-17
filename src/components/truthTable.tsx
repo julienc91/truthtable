@@ -1,9 +1,15 @@
 import React, { ReactNode, useMemo, useState } from "react";
-import { evaluate, listVariables, prettyPrint } from "../utils/parsing";
+import {
+  evaluate,
+  listAllVariables,
+  listVariables,
+  prettyPrint,
+} from "../utils/parsing";
 import { generateCombinations } from "../utils/generator";
 import { FaTrash, FaLock } from "react-icons/fa";
 import EmptyState from "./emptyState";
 import FormulaInput from "./formulaInput";
+import ExportManager from "./exportManager";
 
 const Cell: React.FC<{ className?: string; children: ReactNode }> = ({
   className,
@@ -92,13 +98,10 @@ const TruthTable: React.FC = () => {
   const [formulas, setFormulas] = useState<string[]>([]);
   const [adding, setAdding] = useState<boolean>(false);
   const [locks, setLocks] = useState<Map<string, boolean>>(new Map());
-  const variables = useMemo<string[]>(() => {
-    const variables = new Set<string>();
-    formulas.forEach((formula) =>
-      listVariables(formula).forEach((variable) => variables.add(variable))
-    );
-    return [...variables].sort();
-  }, [formulas]);
+  const variables = useMemo<string[]>(
+    () => listAllVariables(formulas),
+    [formulas]
+  );
 
   const addFormula = (formula: string) => {
     formula = prettyPrint(formula);
@@ -139,52 +142,57 @@ const TruthTable: React.FC = () => {
   }
 
   return (
-    <table className="table-auto overflow-auto">
-      <thead className="border-b-2">
-        <tr>
-          {variables.map((variable, i) => (
-            <th
-              key={`variable-${variable}`}
-              className={i % 2 === 1 ? "bg-neutral-100 dark:bg-slate-800" : ""}
-            >
-              {variable}
-            </th>
-          ))}
-          {formulas.map((formula) => (
-            <th key={`formula-${formula}`} className="border-l-2 px-4">
-              <div className="flex items-center justify-center">
-                <span className="mr-2">{formula}</span>
-                <FaTrash
-                  onClick={() => deleteFormula(formula)}
-                  className="cursor-pointer"
-                />
-              </div>
-            </th>
-          ))}
-          <th>
-            {adding ? (
-              <FormulaInput
-                className="w-[120px] px-1"
-                onAddFormula={(value: string) => {
-                  addFormula(value);
-                  setAdding(false);
-                }}
-                onBlur={() => setAdding(false)}
-              />
-            ) : (
-              <button
-                className=""
-                title="Add a formula"
-                onClick={() => setAdding(true)}
+    <>
+      <table className="table-auto overflow-auto">
+        <thead className="border-b-2">
+          <tr>
+            {variables.map((variable, i) => (
+              <th
+                key={`variable-${variable}`}
+                className={
+                  i % 2 === 1 ? "bg-neutral-100 dark:bg-slate-800" : ""
+                }
               >
-                +
-              </button>
-            )}
-          </th>
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </table>
+                {variable}
+              </th>
+            ))}
+            {formulas.map((formula) => (
+              <th key={`formula-${formula}`} className="border-l-2 px-4">
+                <div className="flex items-center justify-center">
+                  <span className="mr-2">{formula}</span>
+                  <FaTrash
+                    onClick={() => deleteFormula(formula)}
+                    className="cursor-pointer"
+                  />
+                </div>
+              </th>
+            ))}
+            <th>
+              {adding ? (
+                <FormulaInput
+                  className="w-[120px] px-1"
+                  onAddFormula={(value: string) => {
+                    addFormula(value);
+                    setAdding(false);
+                  }}
+                  onBlur={() => setAdding(false)}
+                />
+              ) : (
+                <button
+                  className=""
+                  title="Add a formula"
+                  onClick={() => setAdding(true)}
+                >
+                  +
+                </button>
+              )}
+            </th>
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+      <ExportManager formulas={formulas} />
+    </>
   );
 };
 
